@@ -1,17 +1,43 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Button Click Game</title>
-    <link rel="stylesheet" type="text/css" href="css.css">
-  </head>
-  <body>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1L_dstPt3Jr59z7U6uj//G43sw3gq2q6X6J9WE" crossorigin="anonymous">
+    <title>아이템 강화 게임</title>
+</head>
+<body>
     <div class="container">
-      <h1>버튼 클릭 게임</h1>
-      <p>주어진 시간 동안 버튼을 최대한 많이 클릭해보세요!</p>
-      <button id="button">클릭</button>
-      <div id="timer">30</div>
-      <div id="score"></div>
-    </div>
-    <script src="js.js"></script>
-  </body>
-</html>
+        <h1>아이템 강화 게임</h1>
+        <div class="icon">
+            <i class="fas fa-cloud" id="item-icon"></i>
+        </div>
+        <!-- 상점 추가 -->
+        <h2>상점</h2>
+        <div class="shop">
+            <button id="upgrade-probability">강화 확률 1% 증가 (가격: 1000)</button>
+            <button id="prevent-reset">초기화 방지 아이템 (가격: 5000)</button>
+        </div>
+        <div class="button-container">
+            <button id="upgrade-btn">강화하기</button>
+        </div>
+        <div id="info">
+            <p>강화 횟수: <span id="count">0</span></p>
+            <p>강화 단계: <span id="level">0</span></p>
+            <p>최고 강화 단계: <span id="max-level">0</span></p>
+            <p>공격력: <span id="attack">10</span></p>
+            <p>성공 확률: <span id="success-rate">100%</span></p>
+            <p>실패 확률: <span id="failure-rate">0%</span></p>
+        </div>
+        <div id="slime-container">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjLM5HVl_qlJqPizEiCC4bRmb3a_ubyZgsBQ5dUSsUdw&s" id="slime" alt="슬라임" style="width: 150px;">
+            <p>슬라임 체력: <span id="slime-hp">10000</span></p>
+            <p>슬라임 처치 횟수: <span id="slime-defeated">0</span></p>
+            </div>
+            <button id="attack-btn">슬라임 공격하기</button>
+            </div>
+            <script src="js.js"></script>
+            
+            </body>
+            </html>

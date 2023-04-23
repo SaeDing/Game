@@ -1,59 +1,113 @@
-// 버튼 클릭 게임
+const upgradeBtn = document.getElementById('upgrade-btn');
+const countDisplay = document.getElementById('count');
+const levelDisplay = document.getElementById('level');
+const maxLevelDisplay = document.getElementById('max-level');
+const itemIcon = document.getElementById('item-icon');
+const attackDisplay = document.getElementById('attack');
+const attackBtn = document.getElementById('attack-btn');
+const slimeHPDisplay = document.getElementById('slime-hp');
+const slimeDefeatedDisplay = document.getElementById('slime-defeated');
+const successRateDisplay = document.getElementById('success-rate');
+const failureRateDisplay = document.getElementById('failure-rate');
 
-// 버튼 요소 가져오기
-const button = document.getElementById('button');
+// 상점 버튼 추가
+const upgradeProbabilityBtn = document.getElementById('upgrade-probability');
+const preventResetBtn = document.getElementById('prevent-reset');
 
-// 점수와 시간 변수 초기화
-let score = 0;
-let timeLeft = 30;
+let upgradeCount = 0;
+let level = 0;
+let maxLevel = 0;
+let attack = 10;
+let slimeHP = 10000;
+let initialSlimeHP = 10000;
+let slimeDefeated = 0;
+let preventReset = false; // 초기화 방지 아이템 활성화 여부
+let additionalSuccessRate = 0; // 추가 성공률
 
-// 점수와 시간 요소 가져오기
-const scoreDisplay = document.getElementById('score');
-const timerDisplay = document.getElementById('timer');
+function upgradeSuccess() {
+    const randomNumber = Math.random();
 
-// 타이머 카운트다운 함수
-function countdown() {
-  // 남은 시간 표시
-  timerDisplay.innerHTML = timeLeft;
-
-  // 시간이 0이면 게임 종료
-  if (timeLeft === 0) {
-    // 버튼 비활성화
-    button.disabled = true;
-    // 최종 점수 표시
-    scoreDisplay.innerHTML = `최종 점수: ${score}`;
-  } else {
-    // 시간 감소
-    timeLeft--;
-    // 1초마다 countdown() 함수 실행
-    setTimeout(countdown, 1000);
-  }
+    if (level === 0) return true;
+    else if (level === 1) return randomNumber > 0.1 - additionalSuccessRate;
+    else if (level === 2) return randomNumber > 0.1 - additionalSuccessRate;
+    else if (level === 3) return randomNumber > 0.1 - additionalSuccessRate;
+    else if (level === 4) return randomNumber > 0.1 - additionalSuccessRate;
+    else if (level >= 5) return randomNumber > (0.05 + 0.001 * (level - 5) - additionalSuccessRate);
+    else return false;
 }
 
-// 버튼 클릭 시 실행할 함수
-function handleClick() {
-  // 점수 증가
-  score++;
-  // 점수 표시
-  scoreDisplay.innerHTML = `점수: ${score}`;
+function resetUpgrade() {
+    if (level >= 5 && !preventReset) {
+        level = 0;
+    }
+    levelDisplay.textContent = level;
 }
 
-// 버튼에 클릭 이벤트 추가
-button.addEventListener('click', handleClick);
+function updateRates() {
+    let successRate = 0;
+    if (level === 0) successRate = 100;
+    else if (level === 1) successRate = 90 + additionalSuccessRate * 100;
+    else if (level === 2) successRate = 90 + additionalSuccessRate * 100;
+    else if (level === 3) successRate = 90 + additionalSuccessRate * 100;
+    else if (level === 4) successRate = 90 + additionalSuccessRate * 100;
+    else if (level >= 5) successRate = (0.95 - 0.001 * (level - 5) + additionalSuccessRate) * 100;
 
-// 게임 시작 함수
-function startGame() {
-  // 버튼 활성화
-  button.disabled = false;
-  // 점수 초기화
-  score = 0;
-  scoreDisplay.innerHTML = `점수: ${score}`;
-  // 타이머 시작
-  countdown();
+    let failureRate = 100 - successRate;
+    successRateDisplay.textContent = `${successRate.toFixed(2)}%`;
+    failureRateDisplay.textContent = `${failureRate.toFixed(2)}%`;
 }
 
-// 게임 시작 버튼 요소 가져오기
-const startButton = document.getElementById('start-button');
+function formatLargeNumber(number) {
+    if (number >= 100000000) {
+        return `${(number / 100000000).toFixed(1)}a`;
+    } else {
+       
+        return number;
+    }
+    }
+    
+    upgradeBtn.addEventListener('click', () => {
+    upgradeCount++;
+    countDisplay.textContent = upgradeCount;
+    if (upgradeSuccess()) {
+        level++;
+        levelDisplay.textContent = level;
+        if (level > maxLevel) {
+            maxLevel = level;
+            maxLevelDisplay.textContent = maxLevel;
+        }
+    } else {
+        resetUpgrade();
+    }
+    
+    attack = Math.pow(100, level);
+    attackDisplay.textContent = formatLargeNumber(attack);
+    
+    if (level >= 100) {
+        upgradeBtn.disabled = true;
+    }
+    
+    updateRates();
+});
 
-// 게임 시작 버튼에 클릭 이벤트 추가
-startButton.addEventListener('click', startGame);
+attackBtn.addEventListener('click', () => {
+slimeHP -= attack;
+if (slimeHP <= 0) {
+slimeDefeated++;
+slimeDefeatedDisplay.textContent = slimeDefeated;
+slimeHP = Math.pow(initialSlimeHP, slimeDefeated + 1);
+}
+slimeHPDisplay.textContent = formatLargeNumber(slimeHP);
+});
+
+// 상점 기능 추가
+upgradeProbabilityBtn.addEventListener('click', () => {
+additionalSuccessRate += 0.01;
+updateRates();
+});
+
+preventResetBtn.addEventListener('click', () => {
+preventReset = true;
+});
+
+updateRates();
